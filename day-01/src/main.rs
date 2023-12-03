@@ -1,22 +1,25 @@
 fn main() {
+    // Get File
     let input = include_str!("../input");
-    // let input = "1abc2";
+    // Split file into lines
     let lines = input.lines();
-    let mut nums: Vec<i32> = vec![];
-    let mut value = 0;
 
-    for (_i, l) in lines.enumerate() {
+    // Variable to add to
+    let mut result = 0;
+
+    // Main process, iterating over the lines in the input
+    for l in lines {
+        // Found off of stack overflow, uses regex I think to get all the numeric values from the text.
         let t: Vec<_> = l.chars().filter(|c| c.is_digit(10)).collect();
-        // println!("{:?}", t);
+
+        // Get first and last values
         let mut hello = String::new();
         hello.push(*t.first().unwrap());
         hello.push(*t.last().unwrap());
-        let my_int = hello.parse::<i32>().unwrap();
-        nums.push(my_int);
+
+        // Adding to running total
+        result = result + hello.parse::<i32>().unwrap();
     }
-    
-    for n in &nums {
-        value = value + n;
-    }
-    println!("{}",value);
+
+    println!("The total value is: {}", result);
 }
