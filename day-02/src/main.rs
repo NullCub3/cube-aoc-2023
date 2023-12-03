@@ -1,5 +1,3 @@
-use std::u128::MAX;
-
 struct Game {
     id: usize,
     max_red: usize,
@@ -11,10 +9,6 @@ struct Game {
 // 12 red cubes, 13 green cubes, and 14 blue cubes
 
 fn main() {
-    let input = include_str!("../input");
-    // let input = include_str!("../example");
-    let lines = input.lines();
-    let mut gamelist: Vec<usize> = vec![];
     const MAX_GAME: Game = Game {
         id: 0,
         max_red: 12,
@@ -22,17 +16,21 @@ fn main() {
         max_blue: 14,
     };
 
-    for (_i, line) in lines.enumerate() {
+    //let input = include_str!("../input");
+    let input = include_str!("../example");
+    let mut gamelist: Vec<usize> = vec![];
+
+    for (_i, line) in input.lines().enumerate() {
         // Remote Whitespace
         let data: String = line.chars().filter(|c| !c.is_whitespace()).collect();
         // let data: String = line.to_string();
         let gamesep = data.find(':').unwrap();
-
         // Cut off "Game"
         let gameid = &data["Game".len()..gamesep];
         let data = &data[gamesep + 1..data.len()];
         // println!("gameid: {:?}", gameid);
 
+        // Define game
         let mut game = Game {
             id: gameid.parse().unwrap(),
             max_red: 0,
@@ -40,15 +38,16 @@ fn main() {
             max_blue: 0,
         };
 
-        let rounds = data.split(';');
-        for (_i, round) in rounds.enumerate() {
+        // Parse the data
+        for (_i, round) in data.split(';').enumerate() {
             for (_i, draw) in round.split(',').enumerate() {
-                let split = draw.find(|c: char| !c.is_ascii_digit()).unwrap();
-                let num: usize = draw[0..split].parse::<usize>().expect("welp this failed");
-                let color = &draw[split..draw.len()];
-                // println!("color: {:?}", color);
-                // println!("num: {:?}", num);
-                //write_to_game(num, color, game);
+                let div = draw.find(|c: char| !c.is_ascii_digit()).unwrap();
+                let num: usize = draw[0..div]
+                    .parse::<usize>()
+                    .expect("welp this failed *shrug*");
+                let color = &draw[div..draw.len()];
+
+                // Checking if we need to update the max values for the game
                 match color {
                     "red" => {
                         if game.max_red < num {
@@ -65,6 +64,7 @@ fn main() {
                             game.max_blue = num
                         }
                     }
+                    // Checkall because rust told me to
                     &_ => todo!(),
                 }
             }
@@ -74,6 +74,8 @@ fn main() {
         //     "Final of Game:\n id: {}\nMaxRed: {}\nMaxGreen: {}\nMaxBlue: {}\n",
         //     game.id, game.max_red, game.max_green, game.max_blue
         // );
+
+        // Find games that don't exceede the values of MAX_GAME
         if game.max_red <= MAX_GAME.max_red
             && game.max_green <= MAX_GAME.max_green
             && game.max_blue <= MAX_GAME.max_blue
@@ -82,5 +84,5 @@ fn main() {
             // println!("Gamelist: {:?}", gamelist);
         }
     }
-    println!("Final Sum: {}", gamelist.iter().sum::<usize>())
+    println!("Part One Final Sum: {}", gamelist.iter().sum::<usize>())
 }
