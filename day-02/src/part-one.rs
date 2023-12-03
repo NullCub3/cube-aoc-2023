@@ -16,10 +16,9 @@ fn main() {
         max_blue: 14,
     };
 
-    let input = include_str!("../input");
-    // let input = include_str!("../example");
-    let mut game_list: Vec<usize> = vec![];
-    let mut game_powers_list: Vec<usize> = vec![];
+    //let input = include_str!("../input");
+    let input = include_str!("../example");
+    let mut gamelist: Vec<usize> = vec![];
 
     for (_i, line) in input.lines().enumerate() {
         // Remote Whitespace
@@ -81,16 +80,9 @@ fn main() {
             && game.max_green <= MAX_GAME.max_green
             && game.max_blue <= MAX_GAME.max_blue
         {
-            game_list.push(game.id);
+            gamelist.push(game.id);
             // println!("Gamelist: {:?}", gamelist);
         }
-
-        game_powers_list.push(game.max_red * game.max_green * game.max_blue);
-        // println!("Powers List: {:?}", game_powers_list);
     }
-    println!("Part One Final Sum: {}", game_list.iter().sum::<usize>());
-    println!(
-        "Part Two Final Sum: {}",
-        game_powers_list.iter().sum::<usize>()
-    );
+    println!("Part One Final Sum: {}", gamelist.iter().sum::<usize>())
 }
