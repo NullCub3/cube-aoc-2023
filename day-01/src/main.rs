@@ -37,38 +37,38 @@ fn main() {
         let mut line_num_position: NumPosition = HashMap::new();
 
         for (i, c) in l.chars().enumerate() {
+            chars_string.push(c);
+            // println!("Current Chars: {:?}", chars_string);
             if c.is_ascii_digit() {
+                println!("Number Found: {:?}", c);
                 line_num_position.insert(c, i);
-                println!("NumPositions: {:?}", line_num_position);
-
+                println!("Updated NumPosition: {:?}", line_num_position);
                 println!("Line Chars Cleared: {:?}", chars_string);
                 chars_string.clear();
             } else {
-                for (key, value) in word_map.iter() {
+                for (key, _value) in word_map.iter() {
                     if chars_string.contains(&key.to_string())
                         && !line_word_positions.contains_key(&key.to_string())
                     {
-                        println!("Found {} and added to words", key);
+                        println!("Found {:?} and added to words", key);
                         line_word_positions.insert(key.to_string(), i);
-                        println!("WordPositons: {:?}", line_word_positions);
+                        println!("Updated WordPositons: {:?}", line_word_positions);
 
                         // line_nums.push(*value);
                     } else if chars_string.contains(&key.to_string()) {
-                        println!("Found {} but was already in words", key);
-                    } else {
-                        // print!("{} ", key);
+                        println!("Found {:?} but was already in words", key);
+                        println!("Current WordPositions: {:?}", line_word_positions);
                     }
                 }
-                // println!("<- Hashes Checked");
-                chars_string.push(c);
-                println!("Current Chars: {:?}", chars_string);
             }
         }
 
-        println!("Final Nums: {:?}", line_nums);
-        println!("Final Chars: {:?}", chars_string);
-        println!("Final WordPositons: {:?}", line_word_positions);
-        println!("Final Num Positions: {:?}", line_num_position);
+        println!("\nLine Analyzed. Values:");
+        println!("Line: {}", l);
+        println!("Nums: {:?}", line_nums);
+        println!("Chars: {:?}", chars_string);
+        println!("WordPositons: {:?}", line_word_positions);
+        println!("Num Positions: {:?}\n", line_num_position);
 
         // Get first and last values
         let mut hello = String::new();
