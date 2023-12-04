@@ -39,11 +39,13 @@ fn main() {
                 println!("x {:?}", x);
                 println!("y {:?}", ey);
                 numbertemp.push(*x);
-                number_address.x.push(i)
+                number_address.x.push(i);
             } else if numbertemp.contains(|c: char| c.is_ascii_digit()) {
+                println!("Numbertemp: {}", &numbertemp);
+                println!("{:?}", number_address.x);
                 number_address.number = numbertemp.parse().unwrap();
                 number_address.y = ey;
-                println!("Numbertemp: {}", &numbertemp);
+                numbertemp.clear();
                 //numbers.push(number_address);
             }
         }
