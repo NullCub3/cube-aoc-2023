@@ -33,19 +33,22 @@ fn main() {
             x: vec![],
             y: i,
         };
-        let mut numbertemp: String = String::new();
+        let mut temp_number: String = String::new();
+        let mut temp_addr: Vec<usize> = vec![];
         for (i, x) in y.iter().enumerate() {
             if x.is_ascii_digit() {
                 println!("x {:?}", x);
                 println!("y {:?}", ey);
-                numbertemp.push(*x);
-                number_address.x.push(i);
-            } else if numbertemp.contains(|c: char| c.is_ascii_digit()) {
-                println!("Numbertemp: {}", &numbertemp);
-                println!("{:?}", number_address.x);
-                number_address.number = numbertemp.parse().unwrap();
+                temp_number.push(*x);
+                temp_addr.push(i);
+            } else if temp_number.contains(|c: char| c.is_ascii_digit()) {
+                println!("Numbertemp: {}", &temp_number);
+                number_address.number = temp_number.parse().unwrap();
+                number_address.x = temp_addr.clone();
                 number_address.y = ey;
-                numbertemp.clear();
+                println!("{:?}", number_address.x);
+                temp_number.clear();
+                temp_addr.clear();
                 //numbers.push(number_address);
             }
         }
