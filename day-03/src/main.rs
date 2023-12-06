@@ -26,31 +26,58 @@ fn main() {
 
     // Sweep for number addresses
     let mut numbers: Vec<NumberAddress> = vec![];
-    for (i, y) in blueprint {
-        let ey = i;
-        let mut number_address = NumberAddress {
-            number: 0,
-            x: vec![],
-            y: i,
-        };
+    for (y, line) in blueprint.clone() {
         let mut temp_number: String = String::new();
         let mut temp_addr: Vec<usize> = vec![];
-        for (i, x) in y.iter().enumerate() {
-            if x.is_ascii_digit() {
-                println!("x {:?}", x);
-                println!("y {:?}", ey);
-                temp_number.push(*x);
-                temp_addr.push(i);
+        for (x, c) in line.iter().enumerate() {
+            if c.is_ascii_digit() {
+                // println!("x {:?}", x);
+                // println!("y {:?}", ey);
+                temp_number.push(*c);
+                temp_addr.push(x);
             } else if temp_number.contains(|c: char| c.is_ascii_digit()) {
-                println!("Numbertemp: {}", &temp_number);
-                number_address.number = temp_number.parse().unwrap();
-                number_address.x = temp_addr.clone();
-                number_address.y = ey;
-                println!("{:?}", number_address.x);
+                let number_address = NumberAddress {
+                    number: temp_number.parse().unwrap(),
+                    x: temp_addr.clone(),
+                    y,
+                };
                 temp_number.clear();
                 temp_addr.clear();
-                //numbers.push(number_address);
+                numbers.push(number_address);
             }
         }
+    }
+
+    // Check numbers for actual numbers
+    let mut verified_numbers: Vec<NumberAddress> = vec![];
+    for (i, num) in numbers.iter().enumerate() {
+        println!("Num: {:?}, x: {:?}, y: {:?}", num.number, num.x, num.y);
+
+        let mut sec_end = num.x.last().unwrap().to_owned();
+        if sec_end < blueprint[&num.y].len() {
+            sec_end += 1;
+        }
+
+        let mut sec_first = num.x.first().unwrap().to_owned();
+        sec_first = sec_first.saturating_sub(1);
+
+        let line_next = if num.y < blueprint.len() {
+            num.y + 1
+        } else {
+            num.y
+        };
+        println!("Line Next {}", line_next);
+        println!("Line Past {}", num.y.saturating_sub(1));
+
+        let mut block: Vec<char> = vec![];
+        for y in [num.y.saturating_sub(1), num.y, line_next] {
+            let bp = blueprint[&y][sec_first..=sec_end].iter();
+            println!("Section: {:?}", bp);
+            // block.append(&mut blueprint[&y][sec_first..=sec_end]);
+        }
+        println!("Block: {:?}", block);
+
+        println!("Section end: {:?}", sec_end);
+        println!("Section first: {:?}", sec_first);
     }
 }
