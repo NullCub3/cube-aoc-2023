@@ -1,6 +1,4 @@
-use std::{collections::HashMap, usize};
-
-type BluePrint = HashMap<usize, Vec<char>>;
+type BluePrint = Vec<Vec<char>>;
 
 #[derive(Clone, Debug)]
 struct NumberAddress {
@@ -13,17 +11,18 @@ fn main() {
     let input = include_str!("../input");
     // let input = include_str!("../example");
     let data = input.lines();
-    let mut blueprint: BluePrint = HashMap::new();
+    // let mut blueprint: BluePrint = HashMap::new();
+    let mut blueprint: BluePrint = Vec::new();
 
     // Arrange data into a hashmap
-    for (i, line) in data.enumerate() {
+    for (_i, line) in data.enumerate() {
         let linechar: Vec<char> = line.chars().collect();
-        blueprint.insert(i, linechar.clone());
+        blueprint.push(linechar);
     }
 
     // Sweep for number addresses
     let mut numbers: Vec<NumberAddress> = vec![];
-    for (y, line) in blueprint.clone() {
+    for (y, line) in blueprint.clone().iter().enumerate() {
         let mut temp_number: String = String::new();
         let mut temp_addr: Vec<usize> = vec![];
         for (x, c) in line.iter().enumerate() {
@@ -32,7 +31,7 @@ fn main() {
                 // println!("y {:?}", ey);
                 temp_number.push(*c);
                 temp_addr.push(x);
-            } else if temp_number.contains(|c: char| c.is_ascii_digit()) {
+            } else if !temp_number.is_empty() {
                 let number_address = NumberAddress {
                     number: temp_number.parse().unwrap(),
                     x: temp_addr.clone(),
@@ -42,6 +41,16 @@ fn main() {
                 temp_addr.clear();
                 numbers.push(number_address);
             }
+        }
+        if !temp_number.is_empty() {
+            let number_address = NumberAddress {
+                number: temp_number.parse().unwrap(),
+                x: temp_addr.clone(),
+                y,
+            };
+            temp_number.clear();
+            temp_addr.clear();
+            numbers.push(number_address);
         }
     }
 
@@ -55,23 +64,28 @@ fn main() {
             .last()
             .unwrap()
             .to_owned()
-            .clamp(0, blueprint[&num.y].len() - 1)
-            .saturating_add(1);
-        //println!("sec_end: {:?}", sec_end);
+            .saturating_add(1)
+            .min(blueprint[num.y].len() - 1);
 
         let sec_first = num.x.first().unwrap().to_owned().saturating_sub(1);
 
-        let line_y = num.y.clamp(0, blueprint.len() - 2);
         // println!("bp len: {:?}", blueprint.len());
         // println!("line: {:?}", line_y);
         // println!("line_next: {:?}", line_y.saturating_add(1));
+        // println!("{:?}", num.number);
+        // println!("-- x: {:?} y: {:?} num: {:?} --", num.x, num.y, num.number);
 
-        'linecheck: for y in [line_y.saturating_sub(1), line_y, line_y.saturating_add(1)] {
-            //println!("y: {:?}", y);
-            for c in blueprint[&y][sec_first..=sec_end].iter() {
+        'linecheck: for y in [
+            num.y.saturating_sub(1),
+            num.y,
+            num.y.saturating_add(1).min(blueprint.len() - 1),
+        ] {
+            println!("{:?}", &blueprint[y][sec_first..=sec_end]);
+            for c in blueprint[y][sec_first..=sec_end].iter() {
                 if c.is_ascii_digit() || c == &'.' {
                 } else {
                     verified_numbers.push(num.clone());
+                    println!("[ Found Symbol ]");
                     break 'linecheck;
                 }
             }
