@@ -61,21 +61,24 @@ fn main() {
         let mut sec_first = num.x.first().unwrap().to_owned();
         sec_first = sec_first.saturating_sub(1);
 
-        let line_next = if num.y < blueprint.len() {
+        let line_next = if num.y < blueprint.len() - 1 {
             num.y + 1
         } else {
             num.y
         };
+        println!("Lines: {}", blueprint.len());
         println!("Line Next {}", line_next);
         println!("Line Past {}", num.y.saturating_sub(1));
 
-        let mut block: Vec<char> = vec![];
         for y in [num.y.saturating_sub(1), num.y, line_next] {
-            let bp = blueprint[&y][sec_first..=sec_end].iter();
+            println!("Y: {:?}", y);
+            let bp: String = blueprint[&y][sec_first..=sec_end].iter().collect();
             println!("Section: {:?}", bp);
-            // block.append(&mut blueprint[&y][sec_first..=sec_end]);
+            if bp.chars().any(|c| c.is_ascii_punctuation()) {
+                println!("Had symbols: {:?}", bp);
+            }
         }
-        println!("Block: {:?}", block);
+        //println!("Block: {:?}", block);
 
         println!("Section end: {:?}", sec_end);
         println!("Section first: {:?}", sec_first);
