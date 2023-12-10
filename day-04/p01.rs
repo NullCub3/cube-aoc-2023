@@ -1,21 +1,21 @@
 #![allow(unused)]
-#![allow(unused_variables)]
+
+use std::ops::Add;
 
 #[derive(Clone)]
 struct Card {
     id: usize,
     win_nums: Vec<usize>,
     nums: Vec<usize>,
-    copies: usize,
 }
 
 fn main() {
-    // let input = include_str!("../input");
-    let input = include_str!("../example");
+    let mut input = include_str!("../input");
+    // let input = include_str!("../example");
     let input = input.lines();
     let mut cards: Vec<Card> = vec![];
 
-    for line in input {
+    for (i, line) in input.enumerate() {
         // println!("{line}");
         let line = &line[line.find(|n: char| n.is_ascii_digit()).unwrap()..];
         let id = &line[..line.find(':').unwrap()].parse().unwrap();
@@ -31,29 +31,33 @@ fn main() {
             id: *id,
             win_nums,
             nums,
-            copies: 1,
         };
         // println!("Card {}: {:?} | {:?}", card.id, card.win_nums, card.nums);
         cards.push(card);
     }
-
-    let mut total_value = 0;
-    for (_i, card) in cards.iter().enumerate() {
+    let mut winning_cards: Vec<Card> = vec![];
+    for (i, card) in cards.iter().enumerate() {
         if card.win_nums.iter().any(|n| card.nums.contains(n)) {
-            let mut win_count = 0;
-            for i in &card.nums {
-                if card.win_nums.contains(i) {
-                    win_count += 1;
-                }
-            }
-            total_value += 2_i32.pow(win_count - 1);
-            println!(
-                "Card {} Value: {}, Current Total: {}",
-                card.id,
-                2_i32.pow(win_count - 1),
-                total_value
-            );
+            // println!("Found number {:?}", card.id);
+            winning_cards.push(card.clone());
         }
     }
-    println!("P1 Final Total: {total_value}");
+
+    let mut total_value = 0;
+    for (i, card) in winning_cards.iter().enumerate() {
+        let mut win_count = 0;
+        for i in &card.nums {
+            if card.win_nums.contains(i) {
+                win_count += 1;
+            }
+        }
+        // println!("Final values on card {}: Win Count: {}", card.id, win_count);
+        let value = 2_i32.pow(win_count - 1);
+        total_value += value;
+        // println!(
+        //     "Card {} Value: {}, Current Total: {}",
+        //     card.id, value, total_value
+        // );
+    }
+    println!("Part 1 Final Total: {total_value}");
 }
